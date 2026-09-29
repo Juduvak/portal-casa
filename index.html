@@ -101,7 +101,7 @@ footer{background:var(--vermelho);color:#e9dfca;text-align:center;padding:28px 1
   <h2 class="section-title">Agendamento de Oráculo</h2>
   <p class="section-sub">Escolha uma data e um horário para solicitar seu atendimento</p>
 
-  <div class="notice"><strong>Disponibilidade:</strong> todos os dias estão disponíveis inicialmente. O horário escolhido será confirmado pela Casa pelo WhatsApp.</div>
+  <div class="notice"><strong>Disponibilidade:</strong> as datas e horários exibidos são os que a Casa cadastrou como disponíveis. Após a solicitação, a Casa confirmará o atendimento pelo WhatsApp.</div>
 
   <div class="card">
     <h3>🔮 Solicitar atendimento</h3>
@@ -113,12 +113,16 @@ footer{background:var(--vermelho);color:#e9dfca;text-align:center;padding:28px 1
         style="width:100%;padding:12px;margin:7px 0 16px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px">
 
       <label for="data-oraculo"><strong>Data desejada</strong></label>
-      <input id="data-oraculo" type="date" required
-        style="width:100%;padding:12px;margin:7px 0 16px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px">
+      <select id="data-oraculo" required
+        style="width:100%;padding:12px;margin:7px 0 16px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px;background:#fff">
+        <option value="">Carregando datas disponíveis...</option>
+      </select>
 
-      <label for="hora-oraculo"><strong>Horário desejado</strong></label>
-      <input id="hora-oraculo" type="time" required
-        style="width:100%;padding:12px;margin:7px 0 18px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px">
+      <label for="hora-oraculo"><strong>Horário disponível</strong></label>
+      <select id="hora-oraculo" required disabled
+        style="width:100%;padding:12px;margin:7px 0 18px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px;background:#fff">
+        <option value="">Selecione primeiro uma data</option>
+      </select>
 
       <button type="submit" class="cta" style="border:0;cursor:pointer;font-size:16px">
         📱 Solicitar pelo WhatsApp
@@ -251,18 +255,98 @@ function showPage(id,btn){
  if(btn) btn.classList.add('active');
  window.scrollTo({top:0,behavior:'smooth'});
 }
+let horariosOraculo = [];
+
+function normalizarDataOraculo(valor) {
+  const texto = String(valor || "").trim();
+
+  if (!texto || texto.toUpperCase() === "TODOS OS DIAS") return "";
+
+  // Datas vindas do Google Sheets normalmente chegam como ISO.
+  if (/^\d{4}-\d{2}-\d{2}/.test(texto)) {
+    return texto.slice(0, 10);
+  }
+
+  // Também aceita datas no formato brasileiro, caso a planilha use texto.
+  const partes = texto.split("/");
+  if (partes.length === 3) {
+    return `${partes[2].slice(0,4)}-${String(partes[1]).padStart(2,"0")}-${String(partes[0]).padStart(2,"0")}`;
+  }
+
+  return "";
+}
+
+function formatarDataBR(dataISO) {
+  const [ano, mes, dia] = dataISO.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
+async function carregarHorariosOraculo() {
+  const dataOraculo = document.getElementById("data-oraculo");
+  const horaOraculo = document.getElementById("hora-oraculo");
+  if (!dataOraculo || !horaOraculo) return;
+
+  try {
+    const resposta = await fetch(API_URL + "?aba=Horarios_Oraculo");
+    if (!resposta.ok) throw new Error("Falha na conexão com os horários do Oráculo");
+
+    const dados = await resposta.json();
+
+    horariosOraculo = dados
+      .filter(item => String(item["Status"] || "").toUpperCase().trim() === "DISPONÍVEL")
+      .map(item => ({
+        data: normalizarDataOraculo(item["Data"]),
+        horario: String(item["Horário"] || "").trim(),
+        observacoes: String(item["Observações"] || "").trim()
+      }))
+      .filter(item => item.data && item.horario);
+
+    // Remove possíveis duplicidades de data/horário.
+    horariosOraculo = Array.from(
+      new Map(horariosOraculo.map(item => [`${item.data}|${item.horario}`, item])).values()
+    );
+
+    const datas = [...new Set(horariosOraculo.map(item => item.data))].sort();
+
+    if (!datas.length) {
+      dataOraculo.innerHTML = '<option value="">Nenhuma data disponível no momento</option>';
+      horaOraculo.innerHTML = '<option value="">Nenhum horário disponível</option>';
+      horaOraculo.disabled = true;
+      return;
+    }
+
+    dataOraculo.innerHTML = '<option value="">Selecione uma data</option>' +
+      datas.map(data => `<option value="${data}">${formatarDataBR(data)}</option>`).join("");
+
+    horaOraculo.innerHTML = '<option value="">Selecione primeiro uma data</option>';
+    horaOraculo.disabled = true;
+
+    dataOraculo.addEventListener("change", function() {
+      const dataSelecionada = this.value;
+      const horariosDaData = horariosOraculo.filter(item => item.data === dataSelecionada);
+
+      if (!dataSelecionada || !horariosDaData.length) {
+        horaOraculo.innerHTML = '<option value="">Nenhum horário disponível</option>';
+        horaOraculo.disabled = true;
+        return;
+      }
+
+      horaOraculo.innerHTML = '<option value="">Selecione um horário</option>' +
+        horariosDaData.map(item => `<option value="${escapeHTML(item.horario)}">${escapeHTML(item.horario)}</option>`).join("");
+      horaOraculo.disabled = false;
+    });
+  } catch (erro) {
+    dataOraculo.innerHTML = '<option value="">Não foi possível carregar as datas</option>';
+    horaOraculo.innerHTML = '<option value="">Tente novamente mais tarde</option>';
+    horaOraculo.disabled = true;
+    console.error(erro);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   carregarGiras();
   carregarDoacoes();
-
-  const dataOraculo = document.getElementById("data-oraculo");
-  if (dataOraculo) {
-    const hoje = new Date();
-    const yyyy = hoje.getFullYear();
-    const mm = String(hoje.getMonth() + 1).padStart(2, "0");
-    const dd = String(hoje.getDate()).padStart(2, "0");
-    dataOraculo.min = `${yyyy}-${mm}-${dd}`;
-  }
+  carregarHorariosOraculo();
 
   const formOraculo = document.getElementById("form-oraculo");
   if (formOraculo) {
@@ -273,8 +357,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = document.getElementById("data-oraculo").value;
       const hora = document.getElementById("hora-oraculo").value;
 
-      const [ano, mes, dia] = data.split("-");
-      const dataFormatada = `${dia}/${mes}/${ano}`;
+      if (!data || !hora) {
+        alert("Selecione uma data e um horário disponíveis.");
+        return;
+      }
+
+      const dataFormatada = formatarDataBR(data);
 
       const mensagem =
         `Olá! Gostaria de solicitar um horário para o Oráculo.\n\n` +
