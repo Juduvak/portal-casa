@@ -99,13 +99,33 @@ footer{background:var(--vermelho);color:#e9dfca;text-align:center;padding:28px 1
 
 <section id="oraculo" class="page">
   <h2 class="section-title">Agendamento de Oráculo</h2>
-  <p class="section-sub">Consulte a disponibilidade e solicite seu horário</p>
-  <div class="notice"><strong>Disponibilidade:</strong> todos os dias estão disponíveis inicialmente. O horário escolhido deverá ser confirmado pela Casa antes do atendimento.</div>
+  <p class="section-sub">Escolha uma data e um horário para solicitar seu atendimento</p>
+
+  <div class="notice"><strong>Disponibilidade:</strong> todos os dias estão disponíveis inicialmente. O horário escolhido será confirmado pela Casa pelo WhatsApp.</div>
+
   <div class="card">
-    <h3>Solicitar atendimento</h3>
-    <p>Para solicitar seu horário, entre em contato com a Casa pelo telefone <strong>(11) 95337-3330</strong>, informando seu nome, telefone e o dia de sua preferência. A confirmação do agendamento será feita pela administração.</p>
-    <a class="cta" href="#" onclick="alert('Na próxima etapa podemos conectar este botão a um formulário de agendamento.');return false">Solicitar horário</a>
+    <h3>🔮 Solicitar atendimento</h3>
+    <p>Preencha seus dados abaixo. Ao clicar no botão, o WhatsApp da Casa será aberto com uma mensagem pronta para envio.</p>
+
+    <form id="form-oraculo" style="font-family:Arial,sans-serif">
+      <label for="nome-oraculo"><strong>Nome</strong></label>
+      <input id="nome-oraculo" type="text" required placeholder="Digite seu nome"
+        style="width:100%;padding:12px;margin:7px 0 16px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px">
+
+      <label for="data-oraculo"><strong>Data desejada</strong></label>
+      <input id="data-oraculo" type="date" required
+        style="width:100%;padding:12px;margin:7px 0 16px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px">
+
+      <label for="hora-oraculo"><strong>Horário desejado</strong></label>
+      <input id="hora-oraculo" type="time" required
+        style="width:100%;padding:12px;margin:7px 0 18px;border:1px solid #d8cbc2;border-radius:10px;font-size:16px">
+
+      <button type="submit" class="cta" style="border:0;cursor:pointer;font-size:16px">
+        📱 Solicitar pelo WhatsApp
+      </button>
+    </form>
   </div>
+
   <div class="card">
     <h3>📍 Local do atendimento</h3>
     <p>Rua Tiradentes, 1418 — Sala 4<br>São Bernardo do Campo — SP</p>
@@ -231,7 +251,43 @@ function showPage(id,btn){
  if(btn) btn.classList.add('active');
  window.scrollTo({top:0,behavior:'smooth'});
 }
-document.addEventListener("DOMContentLoaded", () => { carregarGiras(); carregarDoacoes(); });
+document.addEventListener("DOMContentLoaded", () => {
+  carregarGiras();
+  carregarDoacoes();
+
+  const dataOraculo = document.getElementById("data-oraculo");
+  if (dataOraculo) {
+    const hoje = new Date();
+    const yyyy = hoje.getFullYear();
+    const mm = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dd = String(hoje.getDate()).padStart(2, "0");
+    dataOraculo.min = `${yyyy}-${mm}-${dd}`;
+  }
+
+  const formOraculo = document.getElementById("form-oraculo");
+  if (formOraculo) {
+    formOraculo.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const nome = document.getElementById("nome-oraculo").value.trim();
+      const data = document.getElementById("data-oraculo").value;
+      const hora = document.getElementById("hora-oraculo").value;
+
+      const [ano, mes, dia] = data.split("-");
+      const dataFormatada = `${dia}/${mes}/${ano}`;
+
+      const mensagem =
+        `Olá! Gostaria de solicitar um horário para o Oráculo.\n\n` +
+        `Nome: ${nome}\n` +
+        `Data desejada: ${dataFormatada}\n` +
+        `Horário desejado: ${hora}\n\n` +
+        `Aguardo a confirmação da Casa.`;
+
+      const url = "https://wa.me/5511953373330?text=" + encodeURIComponent(mensagem);
+      window.open(url, "_blank");
+    });
+  }
+});
 </script>
 </body>
 </html>
