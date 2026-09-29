@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa de Zé Pelintra e Vó Maria do Rosário</title>
+<style>
+:root{
+  --vermelho:#a3131b; --vermelho2:#d21f2b; --preto:#171313;
+  --creme:#fbf7f0; --texto:#2c2925; --branco:#fffdfb; --dourado:#b9934b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,serif;background:var(--creme);color:var(--texto)}
+header{background:linear-gradient(135deg,var(--preto),#5f0b10 55%,var(--vermelho));color:white;text-align:center;padding:42px 20px}
+header .symbol{font-size:34px;color:#f0d18b}
+h1{color:#fffaf4;margin:10px 0 8px;font-size:clamp(28px,5vw,46px);font-weight:500}
+header p{margin:0;color:#f5e9dc;font-family:Arial,sans-serif}
+.identity{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px}
+.identity span{font-size:28px;filter:drop-shadow(0 2px 2px #0005)}
+.identity i{display:block;width:70px;height:2px;background:#d9b46b}
+nav{position:sticky;top:0;z-index:5;background:var(--branco);border-bottom:1px solid #e4d6cc;display:flex;justify-content:center;gap:8px;padding:10px;flex-wrap:wrap}
+nav button{border:0;background:transparent;padding:11px 15px;border-radius:20px;color:var(--vermelho);font-weight:700;cursor:pointer}
+nav button:hover,nav button.active{background:var(--vermelho);color:white}
+main{max-width:980px;margin:auto;padding:34px 18px 60px}
+.page{display:none}.page.active{display:block}
+.intro{text-align:center;max-width:720px;margin:0 auto 28px}
+.intro h2{font-size:30px;color:var(--vermelho);font-weight:500}
+.intro p{font-family:Arial,sans-serif;line-height:1.6;color:#5b554d}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.card{background:var(--branco);border:1px solid #e1d7c5;border-radius:18px;padding:24px;box-shadow:0 5px 18px #2b25130d}
+.card .icon{font-size:30px}.card h3{color:var(--vermelho);margin:12px 0 8px}.card p{font-family:Arial,sans-serif;line-height:1.5}
+.cta{display:inline-block;margin-top:10px;background:var(--vermelho);color:white;text-decoration:none;border-radius:25px;padding:12px 18px;font-family:Arial,sans-serif;font-weight:700}
+.section-title{text-align:center;color:var(--vermelho);font-size:32px;font-weight:500;margin-bottom:8px}
+.section-sub{text-align:center;font-family:Arial,sans-serif;color:#6b6258;margin-bottom:28px}
+.event{display:flex;gap:20px;align-items:center;background:var(--branco);border-left:5px solid var(--vermelho);padding:18px 20px;margin:14px 0;border-radius:12px;box-shadow:0 4px 15px #2b25130b}
+.date{min-width:75px;text-align:center;color:var(--vermelho);font-family:Arial,sans-serif;font-weight:800}
+.date strong{display:block;font-size:26px}.date span{font-size:13px;text-transform:uppercase}
+.event h3{margin:0 0 6px;color:var(--vermelho);font-size:20px}.event p{margin:0;font-family:Arial,sans-serif;color:#625b52}
+.notice{background:#f5e5df;border-radius:14px;padding:18px;margin:24px 0;font-family:Arial,sans-serif;line-height:1.55}
+footer{background:var(--vermelho);color:#e9dfca;text-align:center;padding:28px 18px;font-family:Arial,sans-serif;font-size:13px}
+@media(max-width:600px){.event{align-items:flex-start}.date{min-width:62px}.event h3{font-size:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="symbol">✦</div>
+  <h1>Casa de Zé Pelintra e Vó Maria do Rosário</h1>
+  <p>Portal de informações e organização da Casa</p>
+  <div class="identity" aria-label="Elementos visuais da identidade da Casa">
+    <span>🎩</span><i></i><span>📿</span>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('inicio',this)">Início</button>
+  <button onclick="showPage('giras',this)">Giras</button>
+  <button onclick="showPage('doacoes',this)">Doações</button>
+  <button onclick="showPage('oraculo',this)">Oráculo</button>
+</nav>
+
+<main>
+<section id="inicio" class="page active">
+  <div class="intro">
+    <h2>Bem-vindo(a)</h2>
+    <p>Este espaço foi criado para facilitar o acesso às informações da Casa, reunindo as próximas giras, informações sobre doações e agendamentos de oráculo em um só lugar.</p>
+  <div class="card" style="margin-top:22px;text-align:left">
+    <h3>🌿 Liderança da Casa</h3>
+    <p><strong>Babá:</strong> Eduardo<br><strong>Iyá:</strong> Patrícia</p>
+    <p><strong>📱 Contato:</strong> (11) 95337-3330</p>
+    <p><strong>📍 Endereço:</strong> Rua Tiradentes, 1418 — Sala 4, São Bernardo do Campo — SP</p>
+  </div>
+  </div>
+  <div class="cards">
+    <div class="card"><div class="icon">📅</div><h3>Próximas Giras</h3><p>Confira as datas das próximas atividades da Casa.</p><a class="cta" href="#" onclick="showPage('giras',document.querySelectorAll('nav button')[1]);return false">Ver calendário</a></div>
+    <div class="card"><div class="icon">🤲</div><h3>Doações</h3><p>Consulte os materiais que a Casa estiver precisando e saiba como colaborar.</p><a class="cta" href="#" onclick="showPage('doacoes',document.querySelectorAll('nav button')[2]);return false">Ver doações</a></div>
+    <div class="card"><div class="icon">🔮</div><h3>Oráculo</h3><p>Consulte os horários disponíveis e solicite seu agendamento.</p><a class="cta" href="#" onclick="showPage('oraculo',document.querySelectorAll('nav button')[3]);return false">Agendar</a></div>
+  </div>
+</section>
+
+<section id="giras" class="page">
+  <h2 class="section-title">Próximas Giras</h2>
+  <p class="section-sub">Calendário informado pela Casa</p>
+
+  <div id="lista-giras"><div class="notice">Carregando calendário...</div></div>
+
+  <div class="notice"><strong>📍 Local:</strong> Rua Tiradentes, 1418 — Sala 4, São Bernardo do Campo — SP.<br><br><strong>Importante:</strong> horários e demais orientações podem ser acrescentados conforme orientação da administração da Casa.</div>
+</section>
+
+<section id="doacoes" class="page">
+  <h2 class="section-title">Doações</h2>
+  <p class="section-sub">Espaço para organizar as necessidades da Casa</p>
+  <div class="cards">
+    <div class="card"><div class="icon">🕯️</div><h3>Velas</h3><p>Velas para as atividades da Casa.</p></div>
+    <div class="card"><div class="icon">🧹</div><h3>Produtos de limpeza</h3><p>Materiais para manutenção e limpeza do espaço.</p></div>
+    <div class="card"><div class="icon">🥫</div><h3>Alimentos</h3><p>Alimentos para as necessidades e atividades da Casa.</p></div>
+    <div class="card"><div class="icon">🥤</div><h3>Bebidas</h3><p>Bebidas conforme as necessidades informadas pela Casa.</p></div>
+    <div class="card"><div class="icon">☕</div><h3>Café</h3><p>Café para contribuir com as atividades e acolhimento.</p></div>
+    <div class="card"><div class="icon">🌿</div><h3>Dendê</h3><p>Óleo de dendê conforme orientação da Casa.</p></div>
+    <div class="card"><div class="icon">🌾</div><h3>Farinha</h3><p>Farinha para as necessidades da Casa.</p></div>
+  </div>
+  <div class="notice"><strong>Quero colaborar:</strong> entre em contato com a Casa pelo telefone <strong>(11) 95337-3330</strong> para confirmar a necessidade do momento e combinar a entrega.</div>
+  <div class="card">
+    <h3>📍 Local para entrega</h3>
+    <p>Rua Tiradentes, 1418 — Sala 4<br>São Bernardo do Campo — SP</p>
+  </div>
+</section>
+
+<section id="oraculo" class="page">
+  <h2 class="section-title">Agendamento de Oráculo</h2>
+  <p class="section-sub">Consulte a disponibilidade e solicite seu horário</p>
+  <div class="notice"><strong>Disponibilidade:</strong> todos os dias estão disponíveis inicialmente. O horário escolhido deverá ser confirmado pela Casa antes do atendimento.</div>
+  <div class="card">
+    <h3>Solicitar atendimento</h3>
+    <p>Para solicitar seu horário, entre em contato com a Casa pelo telefone <strong>(11) 95337-3330</strong>, informando seu nome, telefone e o dia de sua preferência. A confirmação do agendamento será feita pela administração.</p>
+    <a class="cta" href="#" onclick="alert('Na próxima etapa podemos conectar este botão a um formulário de agendamento.');return false">Solicitar horário</a>
+  </div>
+  <div class="card">
+    <h3>📍 Local do atendimento</h3>
+    <p>Rua Tiradentes, 1418 — Sala 4<br>São Bernardo do Campo — SP</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  Casa de Zé Pelintra e Vó Maria do Rosário<br>
+  Babá Eduardo • Iyá Patrícia • (11) 95337-3330<br>
+  Portal digital da Casa — projeto de extensão
+</footer>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxM4vk6DeVIaXDPlTf9OIqGh6fgqNoLFv739RUX9351hqQGIOZBIJcitGNcKoWe8MthJA/exec";
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[char]));
+}
+
+async function carregarGiras() {
+  const container = document.getElementById("lista-giras");
+  if (!container) return;
+
+  container.innerHTML = '<div class="notice">Carregando calendário...</div>';
+
+  try {
+    const resposta = await fetch(API_URL + "?aba=Giras");
+    if (!resposta.ok) throw new Error("Falha na conexão");
+    const dados = await resposta.json();
+
+    const ativas = dados.filter(item =>
+      String(item["Ativa"] || "").toUpperCase() === "SIM"
+    );
+
+    if (!ativas.length) {
+      container.innerHTML = '<div class="notice">No momento não há atividades cadastradas.</div>';
+      return;
+    }
+
+    container.innerHTML = ativas.map(item => {
+      const partes = String(item["Data"] || "").split("/");
+      const dia = partes[0] || "";
+      const mes = partes[1] ? new Date(2000, Number(partes[1])-1, 1)
+        .toLocaleString("pt-BR", {month:"short"}).replace(".", "") : "";
+      const nome = escapeHTML(item["Nome da gira"]);
+      const horario = escapeHTML(item["Horário"]);
+      const obs = escapeHTML(item["Observações"]);
+
+      return `<div class="event">
+        <div class="date"><strong>${escapeHTML(dia)}</strong><span>${escapeHTML(mes)}</span></div>
+        <div>
+          <h3>${nome}</h3>
+          <p>📅 ${escapeHTML(item["Data"])} &nbsp; • &nbsp; 🕐 ${horario || "Horário a confirmar"}</p>
+          ${obs ? `<p style="margin-top:7px">${obs}</p>` : ""}
+        </div>
+      </div>`;
+    }).join("");
+  } catch (erro) {
+    container.innerHTML = '<div class="notice"><strong>Não foi possível carregar o calendário agora.</strong><br>Confira a conexão com a internet ou tente novamente mais tarde.</div>';
+    console.error(erro);
+  }
+}
+
+function showPage(id,btn){
+
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ if(btn) btn.classList.add('active');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener("DOMContentLoaded", carregarGiras);
+</script>
+</body>
+</html>
